@@ -23,7 +23,7 @@ const App = () => {
       setIsLoading(false);
     };
     fetchImages();
-  }, []);
+  }, [page, query]);
 
   const handleSearch = async queryInput => {
     setIsLoading(true);
