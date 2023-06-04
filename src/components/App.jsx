@@ -12,7 +12,7 @@ const App = () => {
   const [page, setPage] = useState(1);
   const [images, setImages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [currentImage, setCurrentImage] = useState(null);
+  const [currentImage, setCurrentImage] = useState('');
   const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const App = () => {
       setIsLoading(false);
     };
     fetchImages();
-  }, [page, query]);
+  }, []);
 
   const handleSearch = async queryInput => {
     setIsLoading(true);
