@@ -6,7 +6,7 @@ const Modal = ({ onClose, isOpen, image }) => {
   useEffect(() => {
     document.addEventListener('keydown', handleClose, false);
     return () => document.removeEventListener('keydown', null, false);
-  }, []);
+  }, [handleClose]);
 
   const handleClose = e => {
     const element = e.target;
