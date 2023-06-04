@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom';
 const Modal = ({ onClose, isOpen, image }) => {
   useEffect(() => {
     document.addEventListener('keydown', handleClose, false);
-    return () => document.removeEventListener('keydown', null, false);
+    return () => document.removeEventListener('keydown', handleClose, false);
   }, [handleClose]);
 
   const handleClose = e => {
