@@ -1,47 +1,42 @@
 import PropTypes from 'prop-types';
-import { Component } from 'react';
+import { useState } from 'react';
 import searchIcon from '../../assets/svg/symbol.defs.svg';
 
-class SearchBar extends Component {
-  state = {
-    query: '',
-  };
+const SearchBar = ({ onSearch }) => {
+  const [query, setQuery] = useState('');
 
-  handleSubmit = e => {
+  const handleSubmit = e => {
     e.preventDefault();
-    const { onSearch } = this.props;
-    onSearch && onSearch(this.state.query);
+    onSearch(query);
   };
 
-  handleChange = e => {
+  const handleChange = e => {
     const { value } = e.currentTarget;
-    this.setState({ query: value });
+    setQuery(value);
   };
 
-  render() {
-    return (
-      <header className="searchbar">
-        <form onSubmit={this.handleSubmit} className="searchform">
-          <button type="submit" className="searchform-button">
-            <svg className="icon" id="icon-search">
-              <use href={searchIcon + '#icon-search'}></use>
-            </svg>
-            <span className="searchform-button-label">Search</span>
-          </button>
+  return (
+    <header className="searchbar">
+      <form onSubmit={handleSubmit} className="searchform">
+        <button type="submit" className="searchform-button">
+          <svg className="icon" id="icon-search">
+            <use href={searchIcon + '#icon-search'}></use>
+          </svg>
+          <span className="searchform-button-label">Search</span>
+        </button>
 
-          <input
-            onChange={this.handleChange}
-            className="searchform-input"
-            type="text"
-            autocomplete="off"
-            autofocus
-            placeholder="Search images and photos"
-          />
-        </form>
-      </header>
-    );
-  }
-}
+        <input
+          onChange={handleChange}
+          className="searchform-input"
+          type="text"
+          autocomplete="off"
+          autofocus
+          placeholder="Search images and photos"
+        />
+      </form>
+    </header>
+  );
+};
 
 SearchBar.propTypes = {
   onSearch: PropTypes.func.isRequired,

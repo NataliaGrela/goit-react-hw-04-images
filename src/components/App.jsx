@@ -4,82 +4,73 @@ import Modal from './Modal/Modal';
 import SearchBar from './Searchbar/Searchbar';
 import Loader from './Loader/Loader';
 import { getImages } from 'api/getImages';
-import { Component } from 'react';
+import { useState } from 'react';
+import { useEffect } from 'react';
 
-class App extends Component {
-  state = {
-    query: '',
-    page: 1,
-    images: [],
-    isLoading: false,
-    error: null,
-    currentImage: null,
-    openModal: false,
+const App = () => {
+  const [query, setQuery] = useState('');
+  const [page, setPage] = useState(1);
+  const [images, setImages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [currentImage, setCurrentImage] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
+
+  useEffect(() => {
+    const fetchImages = async () => {
+      setIsLoading(true);
+      const newImages = await getImages(page, query);
+      setImages(newImages.hits);
+      setIsLoading(false);
+    };
+    fetchImages();
+  }, []);
+
+  const handleSearch = async queryInput => {
+    setIsLoading(true);
+    const newImages = await getImages(1, queryInput);
+    setImages(newImages.hits);
+    setPage(1);
+    setQuery(queryInput);
+    setIsLoading(false);
   };
 
-  async componentDidMount() {
-    const { page, query } = this.state;
-    this.setState({ isLoading: true });
-    const images = await getImages(page, query);
-    this.setState({ images: images.hits, isLoading: false });
-  }
-
-  handleSearch = async query => {
-    this.setState({ isLoading: true });
-    const images = await getImages(1, query);
-    this.setState({
-      images: images.hits,
-      page: 1,
-      query: query,
-      isLoading: false,
-    });
+  const handleLoadMore = async () => {
+    setIsLoading(true);
+    const newImages = await getImages(page + 1, query);
+    setImages([...images, ...newImages.hits]);
+    setPage(page + 1);
+    setIsLoading(false);
   };
 
-  handleLoadMore = async () => {
-    const { page, query } = this.state;
-    this.setState({ isLoading: true });
-    const images = await getImages(page + 1, query);
-    this.setState({
-      images: [...this.state.images, ...images.hits],
-      page: page + 1,
-      isLoading: false,
-    });
+  const handleClickImage = image => {
+    setCurrentImage(image);
+    setOpenModal(true);
   };
 
-  handleClickImage = image => {
-    this.setState({ currentImage: image, openModal: true });
-  };
+  return (
+    <div className="app">
+      <SearchBar onSearch={handleSearch} />
 
-  handleCloseModal = () => {
-    this.setState({ openModal: false });
-  };
+      <ImageGallery
+        onClick={handleClickImage}
+        images={images}
+        page={page}
+        query={query}
+      />
 
-  render() {
-    return (
-      <div className="app">
-        <SearchBar onSearch={this.handleSearch} />
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <Button setPage={handleLoadMore}>Load more</Button>
+      )}
 
-        <ImageGallery
-          onClick={this.handleClickImage}
-          images={this.state.images}
-          page={this.state.page}
-          query={this.state.query}
-        />
-
-        {this.state.isLoading ? (
-          <Loader />
-        ) : (
-          <Button setPage={this.handleLoadMore}>Load more</Button>
-        )}
-
-        <Modal
-          image={this.state.currentImage}
-          isOpen={this.state.openModal}
-          onClose={this.handleCloseModal}
-        />
-      </div>
-    );
-  }
-}
+      <Modal
+        image={currentImage}
+        isOpen={openModal}
+        onClose={() => setOpenModal(false)}
+      />
+    </div>
+  );
+};
 
 export default App;
