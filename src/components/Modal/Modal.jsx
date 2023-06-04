@@ -3,16 +3,16 @@ import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 
 const Modal = ({ onClose, isOpen, image }) => {
+  useEffect(() => {
+    document.addEventListener('keydown', handleClose, false);
+    return () => document.removeEventListener('keydown', null, false);
+  }, []);
+
   const handleClose = e => {
     const element = e.target;
     if (element.className === 'overlay' || e.key === 'Escape') {
       onClose();
     }
-
-    useEffect(() => {
-      document.addEventListener('keydown', handleClose, false);
-      return () => document.removeEventListener('keydown', handleClose, false);
-    }, [handleClose]);
   };
 
   return (
