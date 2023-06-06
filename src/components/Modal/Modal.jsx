@@ -6,6 +6,7 @@ const Modal = ({ onClose, isOpen, image }) => {
   useEffect(() => {
     document.addEventListener('keydown', handleClose, false);
     return () => document.removeEventListener('keydown', null, false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleClose = e => {

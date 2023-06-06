@@ -23,6 +23,7 @@ const App = () => {
       setIsLoading(false);
     };
     fetchImages();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSearch = async queryInput => {
